@@ -92,6 +92,7 @@ var flush_stats = function graphite_flush(ts, metrics) {
   var timer_data_key;
   var counters = metrics.counters;
   var gauges = metrics.gauges;
+  var raws = metrics.raws;
   var timers = metrics.timers;
   var sets = metrics.sets;
   var counter_rates = metrics.counter_rates;
@@ -161,6 +162,17 @@ var flush_stats = function graphite_flush(ts, metrics) {
     statString += namespace.join(".") + '.count' + globalSuffix + sets[key].size() + ts_suffix;
     numStats += 1;
   }
+
+  for (key in sets) {
+    var namespace = setsNamespace.concat(sk(key));
+    statString += namespace.join(".") + '.count' + globalSuffix + sets[key].size() + ts_suffix;
+    numStats += 1;
+  }
+  for (idx in raws) {
+    statString += 'stats.' + raws[idx][0] + ' ' + raws[idx][1] + ' ' + raws[idx][2] + "\n";
+    numStats += 1;
+  }
+  metrics.raws = []
 
   var namespace = globalNamespace.concat(prefixStats);
   if (legacyNamespace === true) {

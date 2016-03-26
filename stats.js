@@ -22,6 +22,7 @@ var gauges = {};
 var sets = {};
 var counter_rates = {};
 var timer_data = {};
+var raws = [];
 var pctThreshold = null;
 var flushInterval, keyFlushInt, serversLoaded, mgmtServer;
 var startup_time = Math.round(new Date().getTime() / 1000);
@@ -81,6 +82,7 @@ function flushMetrics() {
     gauges: gauges,
     timers: timers,
     timer_counters: timer_counters,
+    raws: raws,
     sets: sets,
     counter_rates: counter_rates,
     timer_data: timer_data,
@@ -99,6 +101,7 @@ function flushMetrics() {
       conf.deleteTimers = conf.deleteTimers !== undefined ? conf.deleteTimers : true;
       conf.deleteSets = conf.deleteSets !== undefined ? conf.deleteSets : true;
       conf.deleteGauges = conf.deleteGauges !== undefined ? conf.deleteGauges : true;
+      conf.deleteRaws = conf.deleteRaws !== undefined ? conf.deleteRaws : true;
     }
 
     // Clear the counters
@@ -139,6 +142,11 @@ function flushMetrics() {
       }
     }
 
+    // Clear the sets
+    conf.deleteRaws = conf.deleteRaws || false;
+    if (conf.deleteRaws) {
+      metrics.raws = [];
+    }
 	// normally gauges are not reset.  so if we don't delete them, continue to persist previous value
     conf.deleteGauges = conf.deleteGauges || false;
     if (conf.deleteGauges) {
@@ -263,6 +271,9 @@ config.configFile(process.argv[2], function (config) {
             } else {
               gauges[key] = Number(fields[0] || 0);
             }
+          } else if (metric_type === "r") {
+            raws.push([key, Number(fields[0] || 0), Math.round(new Date().getTime()/1000)]);
+          }
           } else if (metric_type === "s") {
             if (! sets[key]) {
               sets[key] = new set.Set();
@@ -302,7 +313,7 @@ config.configFile(process.argv[2], function (config) {
 
         switch(cmd) {
           case "help":
-            stream.write("Commands: stats, counters, timers, gauges, delcounters, deltimers, delgauges, health, config, quit\n\n");
+            stream.write("Commands: stats, counters, timers, gauges,raws, delcounters, deltimers, delgauges, health, config, quit\n\n");
             break;
 
           case "config":
