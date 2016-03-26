@@ -273,7 +273,6 @@ config.configFile(process.argv[2], function (config) {
             }
           } else if (metric_type === "r") {
             raws.push([key, Number(fields[0] || 0), Math.round(new Date().getTime()/1000)]);
-          }
           } else if (metric_type === "s") {
             if (! sets[key]) {
               sets[key] = new set.Set();
