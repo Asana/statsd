@@ -253,11 +253,12 @@ config.configFile(process.argv[2], function (config) {
               stats.messages.bad_lines_seen++;
               continue;
           }
-          if (fields[2]) {
+
+          var metric_type = fields[1].trim();
+          if (fields[2] && metric_type !== "r") {
             sampleRate = Number(fields[2].match(/^@([\d\.]+)/)[1]);
           }
 
-          var metric_type = fields[1].trim();
           if (metric_type === "ms") {
             if (! timers[key]) {
               timers[key] = [];
