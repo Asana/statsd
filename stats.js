@@ -142,11 +142,6 @@ function flushMetrics() {
       }
     }
 
-    // Clear the sets
-    conf.deleteRaws = conf.deleteRaws || false;
-    if (conf.deleteRaws) {
-      metrics.raws = [];
-    }
 	// normally gauges are not reset.  so if we don't delete them, continue to persist previous value
     conf.deleteGauges = conf.deleteGauges || false;
     if (conf.deleteGauges) {

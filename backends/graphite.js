@@ -168,6 +168,8 @@ var flush_stats = function graphite_flush(ts, metrics) {
     statString += namespace.join(".") + '.count' + globalSuffix + sets[key].size() + ts_suffix;
     numStats += 1;
   }
+
+  l.log("raws: " + raws.join(', '));
   for (idx in raws) {
     statString += 'stats.' + raws[idx][0] + ' ' + raws[idx][1] + ' ' + raws[idx][2] + "\n";
     numStats += 1;
