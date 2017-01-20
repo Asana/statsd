@@ -94,6 +94,10 @@ configlib.configFile(process.argv[2], function (conf, oldConfig) {
     }
   });
 
+  var client = dgram.createSocket(udp_version);
+  // Re-create the udp every time to prevent Kube from locking it to the pod IP
+  setInterval(function() { client = dgram.createSocket(udp_version); }, 10000);
+
   // Listen for the send message, and process the metric key and msg
   packet.on('send', function(key, msg) {
     // retreives the destination for this key
@@ -105,8 +109,6 @@ configlib.configFile(process.argv[2], function (conf, oldConfig) {
     } else {
       var host_config = statsd_host.split(':');
 
-      // Re-create the udp every time to prevent Kube from locking it to the pod IP
-      var client = dgram.createSocket(udp_version);
       // Send the mesg to the backend
       client.send(msg, 0, msg.length, host_config[1], host_config[0]);
     }
