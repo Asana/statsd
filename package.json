@@ -15,7 +15,7 @@
   },
   "version": "0.7.2",
   "dependencies": {
-    "generic-pool": "2.2.0"
+    "generic-pool": "2.5.4"
   },
   "devDependencies": {
     "nodeunit": "0.7.x",
